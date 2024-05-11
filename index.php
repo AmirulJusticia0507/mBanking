@@ -1,75 +1,51 @@
 <?php
-// Mulai sesi
-session_start();
+include 'konekke_local.php';
 
 // Periksa apakah pengguna telah terautentikasi
-if (!isset($_SESSION['user_id'])) {
+session_start();
+if (!isset($_SESSION['userid'])) {
     // Jika tidak ada sesi pengguna, alihkan ke halaman login
     header('Location: login.php');
     exit;
 }
 
-// Sambungkan ke database
-include 'konekke_local.php';
+$namalengkap = $_SESSION['fullname']; // Mengambil fullname dari session
 
-// Kueri untuk mengambil informasi pengguna
-$userID = $_SESSION['user_id'];
-$userQuery = "SELECT Username FROM users WHERE UserID = ?";
-$userStmt = $koneklocalhost->prepare($userQuery);
-$userStmt->bind_param("i", $userID);
-$userStmt->execute();
-$userResult = $userStmt->get_result();
+// Pastikan session 'userid' sudah diset saat login
+$userid = $_SESSION['userid'];
 
-// Periksa apakah pengguna ditemukan
-if ($userResult->num_rows === 0) {
-    // Jika tidak ditemukan, alihkan ke halaman login
-    header('Location: login.php');
-    exit;
+// Query untuk mengambil data karyawan berdasarkan 'userid'
+$sql = "SELECT * FROM karyawan WHERE userid = '$userid'";
+$result = $koneklocalhost->query($sql);
+
+if ($result->num_rows > 0) {
+    // Ambil data karyawan
+    $row = $result->fetch_assoc();
+    // $namalengkap = $row['fullname'];
+    $nik = $row['nik'];
+    $jabatan = $row['jabatan'];
+    $tempatkerja = $row['tempatkerja'];
+    $fotoKaryawan = $row['photokaryawan'];
+    // Potong NIK untuk menampilkan tiga digit awal
+    $nikTigaDigitAwal = substr($nik, 0, 3) . str_repeat('X', strlen($nik) - 3);
+} else {
+    // Jika data karyawan tidak ditemukan
+    $namalengkap = "Data tidak ditemukan";
+    $nikTigaDigitAwal = "";
+    $jabatan = "";
+    $tempatkerja = "";
+    $fotoKaryawan = "";
 }
 
-// Ambil data pengguna
-$userData = $userResult->fetch_assoc();
-$userStmt->close();
-
-// Kueri untuk mengambil informasi saldo rekening
-$accountQuery = "SELECT AccountID, AccountType, Balance FROM accounts WHERE UserID = ?";
-$accountStmt = $koneklocalhost->prepare($accountQuery);
-$accountStmt->bind_param("i", $userID);
-$accountStmt->execute();
-$accountResult = $accountStmt->get_result();
-
-// Ambil data saldo rekening
-$accounts = [];
-while ($row = $accountResult->fetch_assoc()) {
-    $accounts[] = $row;
-}
-$accountStmt->close();
-
-// Kueri untuk mengambil informasi transaksi
-$transactionQuery = "SELECT TransactionID, SourceAccountID, DestinationAccountID, Amount, TransactionType, TransactionDate, Description FROM transactions WHERE SourceAccountID IN (SELECT AccountID FROM accounts WHERE UserID = ?)";
-$transactionStmt = $koneklocalhost->prepare($transactionQuery);
-$transactionStmt->bind_param("i", $userID);
-$transactionStmt->execute();
-$transactionResult = $transactionStmt->get_result();
-
-// Ambil data transaksi
-$transactions = [];
-while ($row = $transactionResult->fetch_assoc()) {
-    $transactions[] = $row;
-}
-$transactionStmt->close();
-
-// Tutup koneksi database
 $koneklocalhost->close();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>SuperApps Amirul Putra</title>
+    <title>Dashboard - BMT BENING SUCI</title>
     <!-- Tambahkan link Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Tambahkan link AdminLTE CSS -->
@@ -161,7 +137,7 @@ $koneklocalhost->close();
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Form Kunjungan</li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                     </ol>
                 </nav>
                 <?php
@@ -170,34 +146,34 @@ $koneklocalhost->close();
                     $currentPage = basename($_SERVER['PHP_SELF']); // Mendapatkan halaman saat ini
                 
                     switch ($page) {
-                        // case 'logkunjungan':
-                        //     if ($currentPage !== 'logkunjungan.php') {
-                        //         header("Location: logkunjungan.php?page=logkunjungan");
-                        //         exit;
-                        //     }
-                        //     break;
+                        case 'absensi':
+                            if ($currentPage !== 'absensi.php') {
+                                header("Location: absensi.php?page=absensi");
+                                exit;
+                            }
+                            break;
                 
-                        // case 'kunjungan':
-                        //     if ($currentPage !== 'kunjungan.php') {
-                        //         header("Location: kunjungan.php?page=kunjungan");
-                        //         exit;
-                        //     }
-                        //     break;
+                        case 'izin':
+                            if ($currentPage !== 'izin.php') {
+                                header("Location: izin.php?page=izin");
+                                exit;
+                            }
+                            break;
                 
-                        // case 'laporangrafik':
-                        //     if ($currentPage !== 'laporangrafik.php') {
-                        //         header("Location: laporangrafik.php?page=laporangrafik");
-                        //         exit;
-                        //     }
-                        //     break;
+                        case 'karyawan':
+                            if ($currentPage !== 'karyawan.php') {
+                                header("Location: karyawan.php?page=karyawan");
+                                exit;
+                            }
+                            break;
                 
                 
-                        // case 'mandatory':
-                        //     if ($currentPage !== 'mandatory.php') {
-                        //         header("Location: mandatory.php?page=mandatory");
-                        //         exit;
-                        //     }
-                        //     break;
+                        case 'rekapdata.php':
+                            if ($currentPage !== 'rekapdata.php.php') {
+                                header("Location: rekapdata.php.php?page=rekapdata.php");
+                                exit;
+                            }
+                            break;
                 
                         // case 'uploadmandatory':
                         //     if ($currentPage !== 'uploadmandatory.php') {
@@ -219,29 +195,78 @@ $koneklocalhost->close();
                 }
                 ?>
 
-                <h2>Welcome, <?php echo $userData['Username']; ?></h2>
-                <!-- Tampilkan saldo rekening utama -->
-                <?php foreach ($accounts as $account): ?>
-                    <?php if ($account['AccountType'] == 'Utama'): ?>
-                        <p>Saldo Rekening Utama: <?php echo $account['Balance']; ?></p>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+                <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                    <div class="card bg-light d-flex flex-fill">
+                        <div class="card-header text-muted border-bottom-0">
+                            <?php echo $jabatan; ?>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="lead"><b><?php echo $namalengkap; ?></b></h2>
+                                    <p class="text-muted text-sm"><b>Job as: </b><b><?php echo $jabatan; ?></b></p>
+                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Address: <b><?php echo $tempatkerja; ?></b></li><br>
+                                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span>
+                                            <div class="input-group mb-3">
+                                                <label for="nik">NIK : </label>
+                                                &emsp;<input type="text" class="form-control" id="nik" value="<?php echo $nikTigaDigitAwal; ?>" readonly>
+                                                <button class="btn btn-outline-secondary" type="button" id="eye-toggle"><i class="fas fa-eye"></i></button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <img src="uploads/photokaryawan/<?php echo $fotoKaryawan; ?>" alt="user-avatar" class="img-circle img-fluid">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><br><br>
 
-                <!-- Tampilkan rekening yang dimiliki -->
-                <h3>Rekening yang Anda Miliki:</h3>
-                <ul>
-                    <?php foreach ($accounts as $account): ?>
-                        <li><?php echo $account['AccountType']; ?>: <?php echo $account['Balance']; ?></li>
-                    <?php endforeach; ?>
-                </ul>
+                <div class="row" align="center">
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user fa-3x"></i>
+                                <h5 class="card-title">Karyawan</h5>
+                                <p class="card-text">Kelola data karyawan</p>
+                                <button onclick="location.href='karyawan.php?page=karyawan'" class="btn btn-secondary">Karyawan</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-camera fa-3x"></i>
+                                <h5 class="card-title">Absen</h5>
+                                <p class="card-text">Absensi</p>
+                                <button onclick="location.href='absensi.php?page=absensi'" class="btn btn-danger">Data Kehadiran</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-file-alt fa-3x"></i>
+                                <h5 class="card-title">History</h5>
+                                <p class="card-text">Rekap data karyawan</p>
+                                <button onclick="location.href='rekapdata.php?page=rekapdata'" class="btn btn-success">Rekap Data</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-file-alt fa-3x"></i>
+                                <h5 class="card-title">Cuti/Izin</h5>
+                                <p class="card-text">Data Cuti/Izin karyawan</p>
+                                <button onclick="location.href='izin.php?page=izin'" class="btn btn-info">Izin</button>
+                            </div>
+                        </div>
+                    </div>
+                </div><hr><br>
 
-                <!-- Tampilkan tombol aksi -->
-                <div>
-                    <button onclick="location.href='transfer.php'">Transfer</button>
-                    <button onclick="location.href='qris.php'">QRIS</button>
-                    <button onclick="location.href='mutasi.php'">Mutasi</button>
-                    <button onclick="location.href='aktivitas_payment.php'">Aktivitas Payment</button>
-                </div>
             </main>
         </div>
     </div>
@@ -254,15 +279,29 @@ $koneklocalhost->close();
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <!-- Tambahkan Select2 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
-
-    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
     <script>
         $(document).ready(function() {
             // Tambahkan event click pada tombol pushmenu
             $('.nav-link[data-widget="pushmenu"]').on('click', function() {
                 // Toggle class 'sidebar-collapse' pada elemen body
                 $('body').toggleClass('sidebar-collapse');
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#eye-toggle').click(function() {
+                var input = $('#nik');
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    // Menampilkan seluruh NIK saat tombol mata diklik
+                    input.val('<?php echo $nik; ?>');
+                } else {
+                    input.attr('type', 'password');
+                    // Menyembunyikan digit setelah tiga digit awal saat tombol mata diklik
+                    input.val('<?php echo $nikTigaDigitAwal; ?>' + 'XXX');
+                }
             });
         });
     </script>

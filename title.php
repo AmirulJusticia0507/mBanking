@@ -1,48 +1,9 @@
-<?php
-include 'konekke_local.php';
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Bersihkan input dari potensi risiko SQL injection
-    $usernameOrFullname = cleanInput($_POST['usernameOrFullname']);
-
-    // Query untuk mencari user berdasarkan username atau fullname
-    $query = "SELECT usersid, username, fullname FROM db_bmt_beningsuci.users WHERE username = ? OR fullname = ?";
-    $stmt = $koneklocalhost->prepare($query);
-    $stmt->bind_param("ss", $usernameOrFullname, $usernameOrFullname);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        // Redirect ke halaman reset password dengan membawa user ID
-        $row = $result->fetch_assoc();
-        header('Location: reset_password.php?user_id=' . $row['usersid']);
-        exit;
-    } else {
-        $error = "User not found";
-    }
-}
-
-function cleanInput($input)
-{
-    $search = array(
-        '@<script[^>]*?>.*?</script>@si',   // Hapus script
-        '@<[\/\!]*?[^<>]*?>@si',            // Hapus tag HTML
-        '@<style[^>]*?>.*?</style>@siU',    // Hapus style tag
-        '@<![\s\S]*?--[ \t\n\r]*>@'         // Hapus komentar
-    );
-    $output = preg_replace($search, '', $input);
-    return $output;
-}
-?>
-
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password Si ABSENSI BMT BENING SUCI</title>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=yes">
+    <title>Login Si ABSENSI BMT BENING SUCI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-    <link rel="icon" href="img/logo_white.png" type="image/png">
+    <link rel="icon" href="img/visiting_new.png" type="image/png">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
         *{
@@ -165,26 +126,3 @@ function cleanInput($input)
         }
     </style>
 </head>
-<body>
-    <div class="content">
-        <div class="col-md-6" align="center">
-            <img src="img/e-absen.png" alt="Image" class="img-fluid" style="width:100%">
-        </div>
-        <div class="text">Forgot Password <span style="color:green">SI ABSENSI</span></div>
-        <form action="#" method="post">
-            <?php if (isset($error)) : ?>
-                <div class="error"><?php echo $error; ?></div>
-            <?php endif; ?>
-            <div class="field">
-                <input type="text" name="usernameOrFullname" required>
-                <span class="fas fa-user"></span>
-                <label>Username or Fullname</label>
-            </div>
-            <button type="submit">Submit</button>
-            <div class="sign-up">
-                Remember your password? <a href="login.php">Sign in now</a>
-            </div>
-        </form>
-    </div>
-</body>
-</html>

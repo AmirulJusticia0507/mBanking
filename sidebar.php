@@ -44,8 +44,8 @@ $usersid = isset($_SESSION['usersid']) ? $_SESSION['usersid'] : '';
 </style>
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #2c3e50; color: #ecf0f1;">
     <!-- Tambahkan konten sidebar AdminLTE di sini -->
-    <a href="kunjungan.php?page=kunjungan" class="brand-link">
-        <span class="brand-text font-weight-light">E-Visit <img src="img/logo_white.png" alt="" style="width:150px;"></span>
+    <a href="index.php?page=dashboard" class="brand-link">
+        <center><span class="brand-text font-weight-light"> <img src="img/e-absen.png" alt="" style="width:150px;"></span></center>
     </a>
     <div class="sidebar">
         <ul class="nav nav-pills nav-sidebar flex-column nowrap" data-widget="treeview" role="menu" data-accordion="false">
@@ -55,16 +55,16 @@ $usersid = isset($_SESSION['usersid']) ? $_SESSION['usersid'] : '';
                     <p>Home</p>
                 </a>
             </li>
-            <!-- <li class="nav-item">
-                <a href="kunjungan.php?page=kunjungan" class="nav-link <?php echo isPageActive('kunjungan'); ?>">
-                    <i class="fa fa-suitcase nav-icon"></i>
-                    <p>Kunjungan</p>
-                </a>
-            </li> -->
             <li class="nav-item">
-                <a href="mutasi.php?page=mutasi" class="nav-link <?php echo isPageActive('mutasi'); ?>">
+                <a href="monthlyabsensi.php?page=monthlyabsensi" class="nav-link <?php echo isPageActive('monthlyabsensi'); ?>">
+                    <i class="fa fa-book nav-icon"></i>
+                    <p>Rekap Data Absensi</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="rekapdata.php?page=rekapdata" class="nav-link <?php echo isPageActive('rekapdata'); ?>">
                     <i class="fa fa-list nav-icon"></i>
-                    <p>Mutasi</p>
+                    <p>Rekap Data</p>
                 </a>
             </li>
             <li class="nav-item">

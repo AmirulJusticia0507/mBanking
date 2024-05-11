@@ -1,3 +1,9 @@
+<?php
+            // Mulai sesi jika belum ada
+            // if (session_status() == PHP_SESSION_NONE) {
+            //     session_start();
+            // }
+            ?>
 <style>
     /* CSS Kustom untuk Header */
     .navbar-custom-menu {
@@ -18,18 +24,19 @@
     <ul class="nav navbar-nav">
         <li class="dropdown user user-menu">
             <?php
+            // Mulai sesi jika belum ada
             if (session_status() == PHP_SESSION_NONE) {
-                session_start(); // Mulai sesi hanya jika belum ada
+                session_start();
             }
-            if (isset($_SESSION['user_id'])) {
-                // Sesi sudah ada, gunakan $_SESSION['userid']
-                $userID = $_SESSION['user_id'];
+            if (isset($_SESSION['userid'])) {
+                // Sesi sudah ada, gunakan $_SESSION['user_id']
+                $userID = $_SESSION['userid'];
 
                 // Sisipkan koneksi.php
                 // require 'koneksi_server.php';
                 require 'konekke_local.php';
 
-                $query = "SELECT username, fullname FROM db_kunjungan.users_new WHERE usersid = $userID";
+                $query = "SELECT username, fullname FROM db_bmt_beningsuci.users WHERE userid = $userID";
                 $result = $koneklocalhost->query($query);
 
                 if ($result->num_rows > 0) {
@@ -41,13 +48,16 @@
                 }
 
                 echo '<a href="#" class="dropdown-toggle" data-toggle="dropdown">';
-                echo '<span class="hidden-xs">' . $username . '</span>';
+                echo '<span class="hidden-xs">' . $namalengkap . '</span>';
                 echo '</a>';
             }
             ?>
             <ul class="dropdown-menu">
                 <li class="user-details">
-                    <p>Nama Pegawai: <strong><?php echo $namalengkap; ?></strong></p>
+                    <p>Users: <strong><?php echo $namalengkap; ?></strong></p>
+                </li>
+                <li class="dropdown-footer">
+                    <a href="karyawan.php?page=karyawan" class="btn btn-info">Profile</a>
                 </li>
             </ul>
         </li>

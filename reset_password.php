@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $hashedPassword = password_hash($new_password, PASSWORD_BCRYPT);
 
     // Query untuk mengupdate password baru ke database
-    $query = "UPDATE users_new SET password = ? WHERE usersid = ?";
+    $query = "UPDATE db_bmt_beningsuci.users SET password = ? WHERE usersid = ?";
     $stmt = $koneklocalhost->prepare($query);
     $stmt->bind_param("ss", $hashedPassword, $user_id);
 
@@ -168,9 +168,9 @@ function cleanInput($input)
 <body>
     <div class="content">
         <div class="col-md-6" align="center">
-            <img src="img/visiting_new.png" alt="Image" class="img-fluid" style="width:100%">
+            <img src="img/e-absen.png" alt="Image" class="img-fluid" style="width:100%">
         </div>
-        <div class="text">Reset Password <span style="color:green">E-Visit</span></div>
+        <div class="text">Reset Password <span style="color:green">SI ABSENSI</span></div>
         <form action="#" method="post">
             <?php if (isset($error)) : ?>
                 <div class="error"><?php echo $error; ?></div>

@@ -1,8 +1,9 @@
 <?php
 $server = "localhost";
+// $username = "root";
 $username = "root";
 $password = "";
-$database = "db_mbanking";
+$database = "db_bmt_beningsuci";
 
 // Buat koneksi ke server
 $koneklocalhost = new mysqli($server, $username, $password, $database);

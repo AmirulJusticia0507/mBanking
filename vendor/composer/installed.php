@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'amirul-putra-justici/m-banking',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '2f06316d6ac73fbf0a4bfab261b477a960a839eb',
         'type' => 'phpmailer',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'amirul-putra-justici/m-banking' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '2f06316d6ac73fbf0a4bfab261b477a960a839eb',
             'type' => 'phpmailer',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
